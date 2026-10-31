@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, Menu, X, Github, Send, Shield } from 'lucide-react';
+import { Sun, Moon, Menu, X, Github, Send } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 export const Navbar: React.FC = () => {
@@ -89,15 +89,6 @@ export const Navbar: React.FC = () => {
             )}
           </button>
 
-          <Link
-            to="/admin"
-            aria-label="Admin Portal"
-            className="hidden sm:inline-flex p-2 rounded-lg text-slate-400 hover:text-brand-500"
-            title="Admin Login"
-          >
-            <Shield className="w-3.5 h-3.5" />
-          </Link>
-
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle Navigation Menu"
@@ -129,9 +120,6 @@ export const Navbar: React.FC = () => {
             <a href="mailto:abdushakuraman7@gmail.com" className="hover:text-brand-500">
               abdushakuraman7@gmail.com
             </a>
-            <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="hover:text-brand-500">
-              Admin
-            </Link>
           </div>
         </div>
       )}

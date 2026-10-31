@@ -10,7 +10,7 @@ coverage
 dist
 build
 client/dist
-server/dist
+.vercel
 
 # Environment variables
 .env
