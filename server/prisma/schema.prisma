@@ -1,0 +1,134 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ProjectCategory {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  projects    Project[]
+
+  @@map("project_categories")
+}
+
+model Project {
+  id                  String              @id @default(uuid())
+  title               String
+  slug                String              @unique
+  summary             String
+  description         String
+  problem             String?
+  solution            String?
+  targetUsers         String?
+  status              String              @default("COMPLETED") // COMPLETED, IN_DEVELOPMENT, ARCHIVED
+  featured            Boolean             @default(false)
+  published           Boolean             @default(true)
+  order               Int                 @default(0)
+  coverImage          String?
+  categoryId          String
+  category            ProjectCategory     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  architecture        String?
+  architectureDiagram String?
+  frontendDetails     String?
+  backendDetails      String?
+  databaseDetails     String?
+  challenges          String?
+  myContributions     String?
+  technologies        ProjectTechnology[]
+  links               ProjectLink[]
+  images              ProjectImage[]
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([published, featured])
+  @@map("projects")
+}
+
+model Technology {
+  id        String              @id @default(uuid())
+  name      String              @unique
+  category  String              // "Programming", "Frontend", "Backend", "Mobile", "Database", "Tools"
+  icon      String?
+  projects  ProjectTechnology[]
+
+  @@map("technologies")
+}
+
+model ProjectTechnology {
+  projectId    String
+  technologyId String
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, technologyId])
+  @@map("project_technologies")
+}
+
+model ProjectLink {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  label     String   // "Live Demo", "GitHub Repository", "Vercel Deployment", etc.
+  url       String
+  type      String   // "DEMO", "GITHUB", "DOCS", "EXTERNAL"
+  createdAt DateTime @default(now())
+
+  @@map("project_links")
+}
+
+model ProjectImage {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("project_images")
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  ipAddress String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("contact_messages")
+}
+
+model AdminAccount {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admin_accounts")
+}
+
+model PortfolioSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("portfolio_settings")
+}
